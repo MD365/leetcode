@@ -15,4 +15,7 @@ class Trie:
         self.children = [None]*26
         self.isEnd = False
 
-    def search
+    def searchPrefix(self,prefix):
+        node = self
+        for ch in prefix:
+            ch = ord(ch) =- ord("a")
