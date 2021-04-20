@@ -40,4 +40,4 @@ class Solution:
 
 if __name__ == '__main__':
     a = Solution()
-    print(a.rob1([2, 7, 9, 3, 1]))
+    print(a.rob1([200, 7, 6, 3, 1]))
