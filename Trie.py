@@ -1,21 +1,37 @@
-'''
-Trie（发音类似 "try"）或者说 前缀树 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。
-这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
+from Crypto.Cipher import AES
+from binascii import b2a_hex, a2b_hex
 
-请你实现 Trie 类：
+# 如果text不足十六位的倍数用空格补充
+def add_to_16(text):
+  if len(text.encode('utf8')) % 16:
+    add = 16 - (len(text.encode('utf8')) % 16)
+  else:
+    add = 0
+  text = text + '\0' * add
+  return text
 
-Trie() 初始化前缀树对象。
-void insert(String word) 向前缀树中插入字符串 word 。
-boolean search(String word) 如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则，返回 false 。
-boolean startsWith(String prefix) 如果之前已经插入的字符串 word 的前缀之一为 prefix ，返回 true ；否则，返回 false 。
-'''
+# 加密
+def encrypt(text):
+  key = '9999999999999999'.encode('utf8')
+  mode = AES.MODE_CBC
+  iv = 'qqqqqqqqqqqqqqqq'.encode('utf8')
+  text = add_to_16(text)
+  cryptos = AES.new(key, mode, iv)
+  cipher_text = cryptos.encrypt(text.encode('utf8'))
+  # 因为AES加密后的字符串不一定是ascii字符集的，输出保存可能存在问题，所以这里转为16进制字符串
+  return b2a_hex(cipher_text)
 
-class Trie:
-    def __init__(self):
-        self.children = [None]*26
-        self.isEnd = False
+# 解密后去掉空格
+def decrypt(text):
+  key = '9999999999999999'.encode('utf8')
+  mode = AES.MODE_CBC
+  iv = b'qqqqqqqqqqqqqqqq'
+  cryptos = AES.new(key, mode, iv)
+  plain_text = cryptos.decrypt(a2b_hex(text))
+  return bytes.decode(plain_text).rstrip('\0')
 
-    def searchPrefix(self,prefix):
-        node = self
-        for ch in prefix:
-            ch = ord(ch) =- ord("a")
+if __name__ == '__main__':
+  a = encrypt('hello')
+  b = decrypt(a)
+  print('加密', a)
+  print('解密', b)
